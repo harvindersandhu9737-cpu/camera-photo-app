@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Take Photo & Send Email</title>
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <script>
+        emailjs.init("W1IMl27bh6uK8IRpL");
+    </script>
+</head>
+<body>
+
+<h2>Take Photo & Send Email</h2>
+
+<video id="camera" width="300" height="300" autoplay></video>
+<br><br>
+
+<button id="snap">Capture & Send</button>
+
+<canvas id="canvas" width="300" height="300" style="display:none;"></canvas>
+
+<script>
+async function startCamera() {
+    const video = document.getElementById("camera");
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "user" }
+    });
+
+    video.srcObject = stream;
+}
+
+document.getElementById("snap").onclick = function () {
+    const video = document.getElementById("camera");
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const base64Image = canvas.toDataURL("image/jpeg");
+
+    const params = {
+        to_email: "harvindersandhu9737@gmail.com",
+        image: base64Image
+    };
+
+    emailjs
+        .send("service_0eibv6h", "template_oxtgeqgg", params)
+        .then(() => {
+            alert("Photo sent successfully!");
+        })
+        .catch((err) => {
+            alert("Error: " + JSON.stringify(err));
+        });
+};
+
+startCamera();
+</script>
+
+</body>
+</html>
